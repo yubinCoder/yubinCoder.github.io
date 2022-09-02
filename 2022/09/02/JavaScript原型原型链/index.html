@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluidicon.png">
+  <link rel="icon" href="/img/fluidicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="JavaScript原型原型链原型在 JavaScript 中，对象有一个特殊的隐藏属性 [[Prototype]]，它要么为 null，要么就是对另一个对象的引用，该对象被称为“原型”。 原型继承当我们从对象中读取一个缺失的属性时，JavaScript 会自动从原型中获取该属性。 在编程中，这种行为被称为“原型继承”。 对象实例并没有toString方法，对象原型Object上有toString">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript原型原型链">
+<meta property="og:url" content="http://example.com/2022/09/02/JavaScript%E5%8E%9F%E5%9E%8B%E5%8E%9F%E5%9E%8B%E9%93%BE/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="JavaScript原型原型链原型在 JavaScript 中，对象有一个特殊的隐藏属性 [[Prototype]]，它要么为 null，要么就是对另一个对象的引用，该对象被称为“原型”。 原型继承当我们从对象中读取一个缺失的属性时，JavaScript 会自动从原型中获取该属性。 在编程中，这种行为被称为“原型继承”。 对象实例并没有toString方法，对象原型Object上有toString">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-02T06:54:14.000Z">
+<meta property="article:modified_time" content="2022-09-02T06:55:48.138Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="原型链">
+<meta property="article:tag" content="prototype">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>JavaScript原型原型链 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"-","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 30vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>yubinCoder</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="JavaScript原型原型链"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-02 14:54" pubdate>
+          2022年9月2日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">JavaScript原型原型链</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="JavaScript原型原型链"><a href="#JavaScript原型原型链" class="headerlink" title="JavaScript原型原型链"></a>JavaScript原型原型链</h1><h2 id="原型"><a href="#原型" class="headerlink" title="原型"></a>原型</h2><p>在 JavaScript 中，对象有一个特殊的隐藏属性 <code>[[Prototype]]</code>，它要么为 <code>null</code>，要么就是对另一个对象的引用，该对象被称为“原型”。</p>
+<h2 id="原型继承"><a href="#原型继承" class="headerlink" title="原型继承"></a>原型继承</h2><p><strong>当我们从对象中读取一个缺失的属性时，JavaScript 会自动从原型中获取该属性。</strong> 在编程中，这种行为被称为“原型继承”。</p>
+<p>对象实例并没有<code>toString</code>方法，对象原型Object上有<code>toString</code>方法，看到<code>toString</code>方法就是原型链到头了</p>
+<h2 id="设置原型的三种方法"><a href="#设置原型的三种方法" class="headerlink" title="设置原型的三种方法"></a>设置原型的三种方法</h2><h3 id="1-proto-隐式原型"><a href="#1-proto-隐式原型" class="headerlink" title="1.__proto__ (隐式原型)"></a>1.<code>__proto__</code> (隐式原型)</h3><p>使用特殊的名字 <code>__proto__</code>，在现代JavaScript中，<code>__proto__</code> 是可读可写的。</p>
+<ul>
+<li><p>原型链不能形成闭环。</p>
+</li>
+<li><p><code>__proto__</code>的值只能是对象或者<code>null</code>，其他的类型都会被忽略。</p>
+</li>
+<li><p>一个对象不能从其他两个对象获得继承。一个对象只能有一个 <code>[[Prototype]]</code>。</p>
+</li>
+<li><p><code>_proto__</code> 与内部的 <code>[[Prototype]]</code> <strong>不一样</strong>。<code>__proto__</code> 是 <code>[[Prototype]]</code> 的 getter&#x2F;setter。</p>
+</li>
+</ul>
+<h3 id="2-Object-setPrototypeOf"><a href="#2-Object-setPrototypeOf" class="headerlink" title="2.Object.setPrototypeOf()"></a>2.<code>Object.setPrototypeOf()</code></h3><p>尽管连node也支持<code>__proto__</code>这种写法，但是我们应该使用<code>Object.getPrototypeOf()</code>和<code>Object.setPrototypeOf()</code>来替代。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> animal = &#123;<span class="hljs-attr">eats</span>: <span class="hljs-literal">true</span>&#125;;<br><span class="hljs-keyword">let</span> rabbit = &#123;<span class="hljs-attr">jumps</span>:<span class="hljs-literal">true</span>&#125;;<br><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">setPrototypeOf</span>(rabbit,animal); <span class="hljs-comment">//将animal设置为rabbit的原型</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(rabbit);  <span class="hljs-comment">//rabbit可以通过原型链访问到eats属性</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-Object-create-proto"><a href="#3-Object-create-proto" class="headerlink" title="3.Object.create(proto)"></a>3.Object.create(proto)</h3><p>使用<code>Object.create(proto)</code>，用给定的 <code>proto</code> 作为原型创建一个空对象。</p>
+<p>我们使用对象字面量或者Object构造函数创建的对象会默认继承自<code>Object.prototype</code>。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> animal = &#123;<span class="hljs-attr">eats</span>: <span class="hljs-literal">true</span>&#125;;<br><span class="hljs-keyword">let</span> rabbit = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">create</span>(animal); <span class="hljs-comment">//让animal作为rabbit的原型</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Function-prototype"><a href="#Function-prototype" class="headerlink" title="Function.prototype"></a>Function.prototype</h2><h3 id="常规prototype"><a href="#常规prototype" class="headerlink" title="常规prototype"></a>常规prototype</h3><p>通过<code>new 构造函数名()</code>来创建一个新的对象。在这里，将构造函数名简写为<code>F</code>，也即 <code>new F()</code>。</p>
+<p>其实不仅构造函数，任何函数都有 <code>prototype</code> 属性，即使我们没有提供它。</p>
+<p><strong>如果 <code>F.prototype</code> 是一个对象，那么 <code>new</code> 操作符会使用它为新对象设置 <code>[[Prototype]]</code>。</strong></p>
+<p>这里的 <code>F.prototype</code> 指的是 <code>F</code> 的一个名为 <code>&quot;prototype&quot;</code> 的常规属性。这听起来与“原型”这个术语很类似，但这里我们实际上指的是具有该名字的常规属性。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> animal = &#123;<span class="hljs-attr">eats</span>: <span class="hljs-literal">true</span>&#125;;<br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Rabbit</span>(<span class="hljs-params">name</span>)&#123;<br> <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span> = name;<br>&#125;<br><br><span class="hljs-comment">// 将Rabbit函数的prototype属性值设置为animal对象</span><br><span class="hljs-title class_">Rabbit</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> = animal;<br><span class="hljs-keyword">let</span> rabbit = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Rabbit</span>(<span class="hljs-string">&quot;White Rabbit&quot;</span>);<br><span class="hljs-comment">// rabbit.__proto__ == animal</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(rabbit.<span class="hljs-property">eats</span>); <span class="hljs-comment">//true</span><br></code></pre></td></tr></table></figure>
+
+<p>设置 <code>Rabbit.prototype = animal</code> 的字面意思是：“当创建了一个 <code>new Rabbit</code> 时，把它的 <code>[[Prototype]]</code> 赋值为 <code>animal</code>”。</p>
+<p><code>F.prototype</code> 属性仅在 <code>new F</code> 被调用时使用，它为新对象的 <code>[[Prototype]]</code> 赋值。</p>
+<p>如果在创建之后，<code>F.prototype</code> 属性有了变化（<code>F.prototype = &lt;another object&gt;</code>），那么通过 <code>new F</code> 创建的新对象也将随之拥有新的对象作为 <code>[[Prototype]]</code>，但已经存在的对象将保持旧有的值。</p>
+<h3 id="默认prototype"><a href="#默认prototype" class="headerlink" title="默认prototype"></a>默认prototype</h3><p>每个函数都有<code>prototype</code>属性，默认的 <code>&quot;prototype&quot;</code> 是一个只有属性 <code>constructor</code> 的对象，属性 <code>constructor</code> 指向函数自身。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs JS"><span class="hljs-title class_">Rabbit</span> =&#123;<br>	prototype：&#123;<br>	constructor：<span class="hljs-title class_">Rabbit</span><br>	&#125;<br>&#125;<br><span class="hljs-comment">//如果我们什么都不做，constructor 属性可以通过 [[Prototype]] 给所有 rabbits 使用：</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Rabbit</span>(<span class="hljs-params"></span>) &#123;&#125;<br><span class="hljs-comment">// by default:</span><br><span class="hljs-comment">// Rabbit.prototype = &#123; constructor: Rabbit &#125; </span><br><span class="hljs-keyword">let</span> rabbit = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Rabbit</span>(); <span class="hljs-comment">// 继承自&#123;constructor: Rabbit&#125; </span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(rabbit.<span class="hljs-property">constructor</span> == <span class="hljs-title class_">Rabbit</span>); <span class="hljs-comment">// true (from prototype)</span><br><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">//我们可以使用 `constructor` 属性来创建一个新对象，该对象使用与现有对象相同的构造器。因为新创建的对象继承的constuctor指向原来的构造函数！</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Rabbit</span>(<span class="hljs-params">name</span>) &#123; <br>	<span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span> = name; <br>	<span class="hljs-title function_">alert</span>(name);<br>&#125; <br><span class="hljs-keyword">let</span> rabbit = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Rabbit</span>(<span class="hljs-string">&quot;White Rabbit&quot;</span>); <br><span class="hljs-keyword">let</span> rabbit2 = <span class="hljs-keyword">new</span> rabbit.<span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-string">&quot;Black Rabbit&quot;</span></span>);<br><br><span class="hljs-comment">//JavaScript 自身并不能确保正确的 &quot;constructor&quot; 函数值。</span><br><br><span class="hljs-comment">//比如我们如果将函数的prototype属性直接替换掉，那就不会存在constructor属性。</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Rabbit</span>(<span class="hljs-params"></span>)&#123;&#125;<br><span class="hljs-title class_">Rabbit</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> = &#123;<span class="hljs-attr">eats</span>: <span class="hljs-literal">true</span>&#125;;<br><span class="hljs-keyword">let</span> rabbit = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Rabbit</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(rabbit.<span class="hljs-property">constructor</span> === <span class="hljs-title class_">Rabbit</span>); <span class="hljs-comment">//false</span><br><br><span class="hljs-comment">//此时JS 会好给原型添加一个constructor属性，而且 constructor会指向 Object 构造函数。</span><br><span class="hljs-title class_">Rabbit</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">constructor</span>  ===object<br><br><span class="hljs-comment">//因此我们就不能依靠 constructor 辨别创建的对象类型了。虽然，instanceOf 还是能可靠地返回对象的类型。</span><br>rebbit <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Rabbit</span>  <span class="hljs-comment">//true</span><br>rabbit.<span class="hljs-property">constructor</span> ===<span class="hljs-title class_">Rabbit</span>  <span class="hljs-comment">//false</span><br><br><span class="hljs-comment">//为了确保正确的 &quot;constructor&quot;，我们可以选择添加/删除属性到默认 &quot;prototype&quot;，而不是将其整个覆盖，或者手动重新创建</span><br><span class="hljs-title class_">Rabbit</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">jumps</span> = <span class="hljs-literal">true</span>;<br><span class="hljs-title class_">Rabbit</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> = &#123; <span class="hljs-attr">jumps</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">constructor</span>: <span class="hljs-title class_">Rabbit</span>&#125;;<br><span class="hljs-comment">// 默认的 Rabbit.prototype.constructor 被保留了下来</span><br><br><span class="hljs-comment">//这种手动添加 constructor 属性也有一点小问题，那就是原生的 constructor 属性是不可枚举的。而这种直接添加的方法，constructor 属性是可枚举的，也即Enumerable属性为true。所以，我们应该使用 Object.defineProperty() 方法来添加 constructor属性。</span><br><br><span class="hljs-title class_">Rabbit</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> = &#123;<span class="hljs-attr">jumps</span>:<span class="hljs-literal">true</span>&#125;;<br><span class="hljs-comment">// 给Rabbit.prototype 添加 constructor属性，其值指向Rabbit函数且不可枚举</span><br><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(<span class="hljs-title class_">Rabbit</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>,<span class="hljs-string">&#x27;constructor&#x27;</span>,&#123;<br>	<span class="hljs-attr">enumerable</span>: <span class="hljs-literal">false</span>,<br>	<span class="hljs-attr">value</span>: <span class="hljs-title class_">Rabbit</span><br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<h2 id="Object-prototype"><a href="#Object-prototype" class="headerlink" title="Object.prototype"></a>Object.prototype</h2><p><code>Object</code> 就是一个内建的对象构造函数，其自身的 <code>prototype</code> 指向一个带有 <code>toString</code> 和其他方法的一个巨大的对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 创建新对象</span><br><span class="hljs-keyword">let</span> obj = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>();<br><span class="hljs-comment">//默认进行了</span><br>obj.<span class="hljs-property">__proto__</span> = <span class="hljs-title class_">Object</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>;<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(obj.<span class="hljs-property">__proto__</span> === <span class="hljs-title class_">Object</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>); <span class="hljs-comment">//true</span><br></code></pre></td></tr></table></figure>
+
+<p>另外 <code>Object.prototype</code> 上方的链中没有更多的 <code>[[Prototype]]</code>。也不能给<code>Object.prototype</code>继续设置原型对象了（会报错）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title class_">Object</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">__proto__</span>   <span class="hljs-comment">//null</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="其他内建对象prototype"><a href="#其他内建对象prototype" class="headerlink" title="其他内建对象prototype"></a>其他内建对象prototype</h2><p>其他内建对象，像 <code>Array</code>、<code>Date</code>、<code>Function</code> 及其他，都在 prototype 上挂载了方法。</p>
+<p>例如，当我们创建一个数组 <code>[1, 2, 3]</code>，在内部会默认使用 <code>new Array()</code> 构造器。因此 <code>Array.prototype</code> 变成了这个数组的 prototype，并为这个数组提供数组的操作方法。这样内存的存储效率是很高的。</p>
+<p>按照规范，所有的内建原型顶端都是 <code>Object.prototype</code>。这就是为什么有人说“一切都从对象继承而来”。</p>
+<p><a target="_blank" rel="noopener" href='https://jiaqicoder.com/2021/07/31/%E5%9B%BE%E8%A7%A3%E5%8E%9F%E5%9E%8B%E5%92%8C%E5%8E%9F%E5%9E%8B%E9%93%BE/' >本文出处</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/JavaScript/" class="category-chain-item">JavaScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8E%9F%E5%9E%8B%E9%93%BE/">#原型链</a>
+      
+        <a href="/tags/prototype/">#prototype</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>JavaScript原型原型链</div>
+      <div>http://example.com/2022/09/02/JavaScript原型原型链/</div>
+    </div>
+    <div class="license-meta">
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年9月2日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/31/hello-world/" title="Hello World">
+                        <span class="hidden-mobile">Hello World</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
