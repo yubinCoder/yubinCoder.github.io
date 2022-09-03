@@ -1,0 +1,758 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluidicon.png">
+  <link rel="icon" href="/img/fluidicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="属性标识与属性描述符对象可以存储属性，对象的属性不仅仅只是简单的“键值”对。 属性标识对象属性（properties），除 value 外，还有三个特殊的特性（attributes），也就是所谓的“标志”：  writable — 如果为 true，则值可以被修改，否则它是只可读的。 enumerable — 如果为 true，则会被在循环中列出，否则不会被列出。 configurable — 如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Object.Properties">
+<meta property="og:url" content="http://example.com/2022/09/03/Object-Properties/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="属性标识与属性描述符对象可以存储属性，对象的属性不仅仅只是简单的“键值”对。 属性标识对象属性（properties），除 value 外，还有三个特殊的特性（attributes），也就是所谓的“标志”：  writable — 如果为 true，则值可以被修改，否则它是只可读的。 enumerable — 如果为 true，则会被在循环中列出，否则不会被列出。 configurable — 如">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-03T08:05:35.000Z">
+<meta property="article:modified_time" content="2022-09-03T08:07:17.633Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Object.Properties">
+<meta property="article:tag" content="对象属性">
+<meta property="article:tag" content="属性标识">
+<meta property="article:tag" content="属性表描述符">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Object.Properties - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"-","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 30vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>yubinCoder</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Object.Properties"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-03 16:05" pubdate>
+          2022年9月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          57 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Object.Properties</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="属性标识与属性描述符"><a href="#属性标识与属性描述符" class="headerlink" title="属性标识与属性描述符"></a>属性标识与属性描述符</h1><p>对象可以存储属性，对象的属性不仅仅只是简单的“键值”对。</p>
+<h2 id="属性标识"><a href="#属性标识" class="headerlink" title="属性标识"></a>属性标识</h2><p>对象属性（properties），除 <strong><code>value</code></strong> 外，还有三个特殊的特性（attributes），也就是所谓的“标志”：</p>
+<ul>
+<li><strong><code>writable</code></strong> — 如果为 <code>true</code>，则值可以被修改，否则它是只可读的。</li>
+<li><strong><code>enumerable</code></strong> — 如果为 <code>true</code>，则会被在循环中列出，否则不会被列出。</li>
+<li><strong><code>configurable</code></strong> — 如果为 <code>true</code>，则此特性可以被删除，这些属性也可以被修改，否则不可以。</li>
+</ul>
+<p>当我们用“常用的方式”创建一个属性时，它们都为 <code>true</code>，但我们也可以随时更改它们。</p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptor">Object.getOwnPropertyDescriptor</a> 方法允许查询有关属性的 <strong>完整</strong> 信息。</p>
+<blockquote>
+<p>语法：</p>
+</blockquote>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-keyword">let</span> descriptor = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Object</span>.</span></span>get<span class="hljs-constructor">OwnPropertyDescriptor(<span class="hljs-params">obj</span>, <span class="hljs-params">propertyName</span>)</span>;<br>Copy<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>obj</p>
+<p>需要从中获取信息的对象</p>
+</li>
+<li><p>propertyName</p>
+<p>属性的名称</p>
+</li>
+</ul>
+<blockquote>
+<p>举例</p>
+</blockquote>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">let <span class="hljs-keyword">user</span>=&#123;<br>    <span class="hljs-type">name</span>:<span class="hljs-string">&#x27;John&#x27;</span><br>&#125;<br>let descriptor=<span class="hljs-keyword">Object</span>.getOwnPropertyDescriptor(<span class="hljs-keyword">user</span>,<span class="hljs-string">&#x27;name&#x27;</span>);<br>console.log(descriptor);<br>// &#123; <span class="hljs-keyword">value</span>: <span class="hljs-string">&#x27;John&#x27;</span>, writable: <span class="hljs-keyword">true</span>, enumerable: <span class="hljs-keyword">true</span>, configurable: <span class="hljs-keyword">true</span> &#125;<br><span class="hljs-keyword">Copy</span><br></code></pre></td></tr></table></figure>
+
+<p>为了修改标志，我们可以使用 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty">Object.defineProperty</a>。</p>
+<blockquote>
+<p>语法</p>
+</blockquote>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Object</span>.</span></span>define<span class="hljs-constructor">Property(<span class="hljs-params">obj</span>, <span class="hljs-params">propertyName</span>, <span class="hljs-params">descriptor</span>)</span><br>Copy<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>obj</code>，<code>propertyName</code></p>
+<p>要应用描述符的对象及其属性。</p>
+</li>
+<li><p><code>descriptor</code></p>
+<p>要应用的属性描述符对象。</p>
+</li>
+</ul>
+<p>如果<code>descriptor</code>属性存在，<code>defineProperty</code> 会更新其标志。否则，它会使用给定的值和标志创建属性；在这种情况下，如果没有提供标志，则会假定它是 <code>false</code>。</p>
+<p>例如，这里创建了一个属性 <code>name</code>，该属性的所有标志都为 <code>false</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">let</span> user = &#123;&#125;;<br><br>Object.defineProperty(user, <span class="hljs-string">&quot;name&quot;</span>, &#123;<br>  value: <span class="hljs-string">&quot;John&quot;</span><br>&#125;);<br><br><span class="hljs-built_in">let</span> descriptor = Object.getOwnPropertyDescriptor(user, <span class="hljs-string">&#x27;name&#x27;</span>);<br><br>alert( JSON.stringify(descriptor, null, 2 ) );<br>/*<br>&#123;<br>  <span class="hljs-string">&quot;value&quot;</span>: <span class="hljs-string">&quot;John&quot;</span>,<br>  <span class="hljs-string">&quot;writable&quot;</span>: <span class="hljs-literal">false</span>,<br>  <span class="hljs-string">&quot;enumerable&quot;</span>: <span class="hljs-literal">false</span>,<br>  <span class="hljs-string">&quot;configurable&quot;</span>: <span class="hljs-literal">false</span><br>&#125;<br> */<br>Copy<br></code></pre></td></tr></table></figure>
+
+<p>将它与上面的“以常用方式创建的” <code>user.name</code> 进行比较：现在所有标志都为 <code>false</code>。如果这不是我们想要的，那么我们最好在 <code>descriptor</code> 中将它们设置为 <code>true</code>。</p>
+<h2 id="只读"><a href="#只读" class="headerlink" title="只读"></a>只读</h2><p>通过更改 <code>writable</code> 标志来把 <code>user.name</code> 设置为只读（<code>user.name</code> 不能被重新赋值）</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">let <span class="hljs-keyword">user</span> = &#123;<br>  <span class="hljs-type">name</span>: &quot;John&quot;<br>&#125;;<br><br><span class="hljs-keyword">Object</span>.defineProperty(<span class="hljs-keyword">user</span>, &quot;name&quot;, &#123;<br>  writable: <span class="hljs-keyword">false</span><br>&#125;);<br><br><span class="hljs-keyword">user</span>.name = &quot;Pete&quot;; // Error: Cannot assign <span class="hljs-keyword">to</span> <span class="hljs-keyword">read</span> <span class="hljs-keyword">only</span> property <span class="hljs-string">&#x27;name&#x27;</span><br><span class="hljs-keyword">Copy</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>只在严格模式下会出现 Errors</strong></p>
+</blockquote>
+<h2 id="不可枚举"><a href="#不可枚举" class="headerlink" title="不可枚举"></a>不可枚举</h2><p>如果在 <code>user</code>中 添加一个自定义的 <code>toString</code>。</p>
+<p>通常，对象的内置 <code>toString</code> 是不可枚举的，它不会显示在 <code>for..in</code> 中。但是如果我们添加我们自己的 <code>toString</code>，那么默认情况下它将显示在 <code>for..in</code> 中，如下所示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> user = &#123;<br>  <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;John&quot;</span>,<br>  <span class="hljs-title function_">toString</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>;<br>  &#125;<br>&#125;;<br><br><span class="hljs-comment">// 默认情况下，我们的两个属性都会被列出：</span><br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> user) <span class="hljs-title function_">alert</span>(key); <span class="hljs-comment">// name, toString</span><br><span class="hljs-title class_">Copy</span><br></code></pre></td></tr></table></figure>
+
+<p>如果我们不喜欢它，那么我们可以设置 <code>enumerable:false</code>。之后它就不会出现在 <code>for..in</code> 循环中了，就像内建的 <code>toString</code> 一样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> user = &#123;<br>  <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;John&quot;</span>,<br>  <span class="hljs-title function_">toString</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>;<br>  &#125;<br>&#125;;<br><br><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(user, <span class="hljs-string">&quot;toString&quot;</span>, &#123;<br>  <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">false</span><br>&#125;);<br><br><span class="hljs-comment">// 现在我们的 toString 消失了：</span><br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> user) <span class="hljs-title function_">alert</span>(key); <span class="hljs-comment">// name</span><br><span class="hljs-title class_">Copy</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="不可配置"><a href="#不可配置" class="headerlink" title="不可配置"></a>不可配置</h2><p>不可配置标志（<code>configurable:false</code>）有时会预设在内建对象和属性中。不可配置的属性不能被删除。</p>
+<p>因此，开发人员无法修改 <code>Math.PI</code> 的值或覆盖它。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk">Math.PI = <span class="hljs-number">3</span>; <span class="hljs-regexp">//</span> Error<br><br><span class="hljs-regexp">//</span> 删除 Math.PI 也不会起作用<br>Copy<br></code></pre></td></tr></table></figure>
+
+<p>使属性变成不可配置是一条单行道。我们无法使用 <code>defineProperty</code> 把它改回去。</p>
+<p>确切地说，不可配置性对 <code>defineProperty</code> 施加了一些限制：</p>
+<ol>
+<li>不能修改 <code>configurable</code> 标志。</li>
+<li>不能修改 <code>enumerable</code> 标志。</li>
+<li>不能将 <code>writable: false</code> 修改为 <code>true</code>（反过来则可以）。</li>
+<li>不能修改访问者属性的 <code>get/set</code>（但是如果没有可以分配它们）。</li>
+</ol>
+<hr>
+<p><strong>“configurable: false” 的用途是防止更改和删除属性标志，但是允许更改对象的值。</strong></p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">let <span class="hljs-keyword">user</span> = &#123;<br>  <span class="hljs-type">name</span>: &quot;John&quot;<br>&#125;;<br><br><span class="hljs-keyword">Object</span>.defineProperty(<span class="hljs-keyword">user</span>, &quot;name&quot;, &#123;<br>  configurable: <span class="hljs-keyword">false</span><br>&#125;);<br><br><span class="hljs-keyword">user</span>.name = &quot;Pete&quot;; // 正常工作<br><span class="hljs-keyword">delete</span> <span class="hljs-keyword">user</span>.name; // Error<br><span class="hljs-keyword">Copy</span><br></code></pre></td></tr></table></figure>
+
+<p>现在，我们将 <code>user.name</code> 设置为一个“永不可改”的常量：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">let <span class="hljs-keyword">user</span> = &#123;<br>  <span class="hljs-type">name</span>: &quot;John&quot;<br>&#125;;<br><br><span class="hljs-keyword">Object</span>.defineProperty(<span class="hljs-keyword">user</span>, &quot;name&quot;, &#123;<br>  writable: <span class="hljs-keyword">false</span>,<br>  configurable: <span class="hljs-keyword">false</span><br>&#125;);<br><br>// 不能修改 <span class="hljs-keyword">user</span>.name 或它的标志<br>// 下面的所有操作都不起作用：<br><span class="hljs-keyword">user</span>.name = &quot;Pete&quot;;<br><span class="hljs-keyword">delete</span> <span class="hljs-keyword">user</span>.name;<br><span class="hljs-keyword">Object</span>.defineProperty(<span class="hljs-keyword">user</span>, &quot;name&quot;, &#123; <span class="hljs-keyword">value</span>: &quot;Pete&quot; &#125;);<br><span class="hljs-keyword">Copy</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Object-defineProperties"><a href="#Object-defineProperties" class="headerlink" title="Object.defineProperties"></a><a target="_blank" rel="noopener" href="https://zh.javascript.info/property-descriptors#objectdefineproperties">Object.defineProperties</a></h2><p>有一个方法 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperties">Object.defineProperties(obj, descriptors)</a>，允许一次定义多个属性。</p>
+<blockquote>
+<p>语法</p>
+</blockquote>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs dts">Object.defineProperties(obj, <span class="hljs-punctuation">&#123;</span><br><span class="hljs-symbol">  prop1:</span> descriptor1,<br><span class="hljs-symbol">  prop2:</span> descriptor2<br>  <span class="hljs-comment">// ...</span><br><span class="hljs-punctuation">&#125;</span>)<span class="hljs-punctuation">;</span><br>Copy<br></code></pre></td></tr></table></figure>
+
+<p>比如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs php">Object.<span class="hljs-title function_ invoke__">defineProperties</span>(user, &#123;<br>  <span class="hljs-attr">name</span>: &#123; <span class="hljs-attr">value</span>: <span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-attr">writable</span>: <span class="hljs-literal">false</span> &#125;,<br>  <span class="hljs-attr">surname</span>: &#123; <span class="hljs-attr">value</span>: <span class="hljs-string">&quot;Smith&quot;</span>, <span class="hljs-attr">writable</span>: <span class="hljs-literal">false</span> &#125;,<br>  // ...<br>&#125;);<br>Copy<br></code></pre></td></tr></table></figure>
+
+<h2 id="Object-getOwnPropertyDescriptors"><a href="#Object-getOwnPropertyDescriptors" class="headerlink" title="Object.getOwnPropertyDescriptors"></a><a target="_blank" rel="noopener" href="https://zh.javascript.info/property-descriptors#objectgetownpropertydescriptors">Object.getOwnPropertyDescriptors</a></h2><p>要一次获取所有属性描述符，我们可以使用 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptors">Object.getOwnPropertyDescriptors(obj)</a> 方法。</p>
+<p>它与 <code>Object.defineProperties</code> 一起可以用作克隆对象的“标志感知”方式：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-keyword">let</span> clone = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Object</span>.</span></span>define<span class="hljs-constructor">Properties(&#123;&#125;, Object.<span class="hljs-params">getOwnPropertyDescriptors</span>(<span class="hljs-params">obj</span>)</span>);<br><br>Copy<br></code></pre></td></tr></table></figure>
+
+<p>通常，当我们克隆一个对象时，我们使用赋值的方式来复制属性，像这样：</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs maxima"><span class="hljs-keyword">for</span> (<span class="hljs-built_in">let</span> <span class="hljs-built_in">key</span> <span class="hljs-keyword">in</span> user) &#123;<br>  clone[<span class="hljs-built_in">key</span>] = user[<span class="hljs-built_in">key</span>]<br>&#125;<br>Copy<br></code></pre></td></tr></table></figure>
+
+<p>……但是，这并不能复制标志。所以如果我们想要一个“更好”的克隆，那么 <code>Object.defineProperties</code> 是首选。</p>
+<p>另一个区别是 <code>for..in</code> 会忽略 symbol 类型的属性，但是 <code>Object.getOwnPropertyDescriptors</code> 返回包含 symbol 类型的属性在内的 <strong>所有</strong> 属性描述符。</p>
+<h1 id="属性的getter和setter"><a href="#属性的getter和setter" class="headerlink" title="属性的getter和setter"></a>属性的getter和setter</h1><p>有两种类型的对象属性。</p>
+<p>第一种是 <strong>数据属性</strong>。我们已经知道如何使用它们了。到目前为止，我们使用过的所有属性都是数据属性。</p>
+<p>第二种类型的属性是新东西。它是 <strong>访问器属性（accessor properties）</strong>。它们本质上是用于获取和设置值的函数，但从外部代码来看就像常规属性。</p>
+<h2 id="访问器属性-getter和setter"><a href="#访问器属性-getter和setter" class="headerlink" title="访问器属性(getter和setter)"></a>访问器属性(getter和setter)</h2><p>访问器属性由 “getter” 和 “setter” 方法表示。在对象字面量中，它们用 <code>get</code> 和 <code>set</code> 表示：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">let</span> obj = &#123;<br>  <span class="hljs-function"><span class="hljs-keyword">get</span> <span class="hljs-title">propName</span>()</span> &#123;<br>    <span class="hljs-comment">// 当读取 obj.propName 时，getter 起作用</span><br>  &#125;,<br><br>  <span class="hljs-function"><span class="hljs-keyword">set</span> <span class="hljs-title">propName</span>(<span class="hljs-params"><span class="hljs-keyword">value</span></span>)</span> &#123;<br>    <span class="hljs-comment">// 当执行 obj.propName = value 操作时，setter 起作用</span><br>  &#125;<br>&#125;;<br>Copy<br></code></pre></td></tr></table></figure>
+
+<p>当读取 <code>obj.propName</code> 时，getter 起作用，当 <code>obj.propName</code> 被赋值时，setter 起作用。</p>
+<p>例如，我们有一个具有 <code>name</code> 和 <code>surname</code> 属性的对象 <code>user</code>：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">let <span class="hljs-keyword">user</span> <span class="hljs-title">= &#123;</span><br><span class="hljs-title">  name</span>: <span class="hljs-string">&quot;John&quot;</span>,<br>  surname: <span class="hljs-string">&quot;Smith&quot;</span><br>&#125;;<br>Copy<br></code></pre></td></tr></table></figure>
+
+<p>现在我们想添加一个 <code>fullName</code> 属性，该属性值应该为 <code>&quot;John Smith&quot;</code>。当然，我们不想复制粘贴已有的信息，因此我们可以使用访问器来实现：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> user = &#123;<br>  <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;John&quot;</span>,<br>  <span class="hljs-attr">surname</span>: <span class="hljs-string">&quot;Smith&quot;</span>,<br><br>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">fullName</span>() &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.name&#125;</span> <span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.surname&#125;</span>`</span>;<br>  &#125;<br>&#125;;<br><span class="hljs-title function_">alert</span>(user.<span class="hljs-property">fullName</span>); <span class="hljs-comment">// John Smith</span><br><span class="hljs-title class_">Copy</span><br></code></pre></td></tr></table></figure>
+
+<p>从外表看，访问器属性看起来就像一个普通属性。这就是访问器属性的设计思想。我们不以函数的方式 <strong>调用</strong> <code>user.fullName</code>，我们正常 <strong>读取</strong> 它：getter 在幕后运行。</p>
+<p>截至目前，<code>fullName</code> 只有一个 getter。如果我们尝试赋值操作 <code>user.fullName=</code>，将会出现错误：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> user = &#123;<br>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">fullName</span>() &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">`...`</span>;<br>  &#125;<br>&#125;;<br><br>user.<span class="hljs-property">fullName</span> = <span class="hljs-string">&quot;Test&quot;</span>; <span class="hljs-comment">// Error（属性只有一个 getter）</span><br><span class="hljs-title class_">Copy</span><br><span class="hljs-keyword">let</span> user=&#123;<br>    <span class="hljs-attr">name</span>:<span class="hljs-string">&#x27;John&#x27;</span>,<br>    <span class="hljs-attr">surname</span>:<span class="hljs-string">&#x27;Smith&#x27;</span>,<br>    <span class="hljs-keyword">get</span> <span class="hljs-title function_">fullname</span>()&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.name&#125;</span> <span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.surname&#125;</span>`</span>;<br>    &#125;,<br>    <span class="hljs-keyword">set</span> <span class="hljs-title function_">fullname</span>(<span class="hljs-params">value</span>)&#123;<br>        <span class="hljs-comment">// 将获取的值解构赋值给对象的name和surname属性</span><br>        [<span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>,<span class="hljs-variable language_">this</span>.<span class="hljs-property">surname</span>]=value.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27; &#x27;</span>);<br>    &#125;<br>&#125;<br><br>user.<span class="hljs-property">fullname</span>=<span class="hljs-string">&#x27;alice cooper&#x27;</span>;<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(user.<span class="hljs-property">name</span>);<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(user.<span class="hljs-property">fullname</span>);<br><span class="hljs-title class_">Copy</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="访问器描述符"><a href="#访问器描述符" class="headerlink" title="访问器描述符"></a>访问器描述符</h2><p>访问器属性的描述符与数据属性的不同。</p>
+<p>所以访问器描述符可能有：</p>
+<ul>
+<li><strong><code>get</code></strong> —— 一个没有参数的函数，在读取属性时工作，</li>
+<li><strong><code>set</code></strong> —— 带有一个参数的函数，当属性被设置时调用，</li>
+<li><strong><code>enumerable</code></strong> —— 与数据属性的相同，</li>
+<li><strong><code>configurable</code></strong> —— 与数据属性的相同。</li>
+</ul>
+<p>例如，要使用 <code>defineProperty</code> 创建一个 <code>fullName</code> 访问器，我们可以使用 <code>get</code> 和 <code>set</code> 来传递描述符：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> user = &#123;<br>  <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;John&quot;</span>,<br>  <span class="hljs-attr">surname</span>: <span class="hljs-string">&quot;Smith&quot;</span><br>&#125;;<br><br><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(user, <span class="hljs-string">&#x27;fullName&#x27;</span>, &#123;<br>  <span class="hljs-title function_">get</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.name&#125;</span> <span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.surname&#125;</span>`</span>;<br>  &#125;,<br><br>  <span class="hljs-title function_">set</span>(<span class="hljs-params">value</span>) &#123;<br>    [<span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">surname</span>] = value.<span class="hljs-title function_">split</span>(<span class="hljs-string">&quot; &quot;</span>);<br>  &#125;<br>&#125;);<br><br><span class="hljs-title function_">alert</span>(user.<span class="hljs-property">fullName</span>); <span class="hljs-comment">// John Smith</span><br><br><span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> user) <span class="hljs-title function_">alert</span>(key); <span class="hljs-comment">// name, surname</span><br><span class="hljs-title class_">Copy</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>请注意，一个属性要么是访问器（具有 <code>get/set</code> 方法），要么是数据属性（具有 <code>value</code>），但不能两者都是。</strong></p>
+<p>如果我们试图在同一个描述符中同时提供 <code>get</code> 和 <code>value</code>，则会出现错误：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// Error: Invalid property descriptor.</span><br><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(&#123;&#125;, <span class="hljs-string">&#x27;prop&#x27;</span>, &#123;<br>  <span class="hljs-title function_">get</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span><br>  &#125;,<br><br>  <span class="hljs-attr">value</span>: <span class="hljs-number">2</span><br>&#125;);<br><span class="hljs-title class_">Copy</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="更聪明的getter-x2F-setter"><a href="#更聪明的getter-x2F-setter" class="headerlink" title="更聪明的getter&#x2F;setter"></a>更聪明的getter&#x2F;setter</h2><p>Getter&#x2F;setter 可以用作“真实”属性值的包装器，以便对它们进行更多的控制。</p>
+<p>例如，如果我们想禁止太短的 <code>user</code> 的 name，我们可以创建一个 setter <code>name</code>，并将值存储在一个单独的属性 <code>_name</code> 中：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">let <span class="hljs-keyword">user</span> = &#123;<br>  <span class="hljs-keyword">get</span> <span class="hljs-type">name</span>() &#123;<br>    <span class="hljs-keyword">return</span> this._name;<br>  &#125;,<br><br>  <span class="hljs-keyword">set</span> <span class="hljs-type">name</span>(<span class="hljs-keyword">value</span>) &#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">value</span>.length &lt; <span class="hljs-number">4</span>) &#123;<br>      alert(&quot;Name is too short, need at least 4 characters&quot;);<br>      <span class="hljs-keyword">return</span>;<br>    &#125;<br>    this._name = <span class="hljs-keyword">value</span>;<br>  &#125;<br>&#125;;<br><br><span class="hljs-keyword">user</span>.name = &quot;Pete&quot;;<br>alert(<span class="hljs-keyword">user</span>.name); // Pete<br><br><span class="hljs-keyword">user</span>.name = &quot;&quot;; // <span class="hljs-type">Name</span> 太短了……<br><span class="hljs-keyword">Copy</span><br></code></pre></td></tr></table></figure>
+
+<p>所以，name 被存储在 <code>_name</code> 属性中，并通过 getter 和 setter 进行访问。</p>
+<p>从技术上讲，外部代码可以使用 <code>user._name</code> 直接访问 name。但是，这儿有一个众所周知的约定，即以下划线 <code>&quot;_&quot;</code> 开头的属性是内部属性，不应该从对象外部进行访问。</p>
+<p>本笔记基于 <a herf='https://jiaqicoder.com/2021/07/27/%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7%E6%8F%8F%E8%BF%B0%E7%AC%A6%E5%92%8C%E8%AE%BF%E9%97%AE%E5%99%A8%E5%B1%9E%E6%80%A7/'>修改</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/JavaScript/" class="category-chain-item">JavaScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Object-Properties/">#Object.Properties</a>
+      
+        <a href="/tags/%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7/">#对象属性</a>
+      
+        <a href="/tags/%E5%B1%9E%E6%80%A7%E6%A0%87%E8%AF%86/">#属性标识</a>
+      
+        <a href="/tags/%E5%B1%9E%E6%80%A7%E8%A1%A8%E6%8F%8F%E8%BF%B0%E7%AC%A6/">#属性表描述符</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Object.Properties</div>
+      <div>http://example.com/2022/09/03/Object-Properties/</div>
+    </div>
+    <div class="license-meta">
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年9月3日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/09/03/Vue%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8/" title="Vue基础入门">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Vue基础入门</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/02/JavaScript%E7%AC%94%E8%AE%B0-ES6-ES10/" title="JavaScript笔记(ES6-ES10)">
+                        <span class="hidden-mobile">JavaScript笔记(ES6-ES10)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
